@@ -125,7 +125,7 @@ def getAvailableLocationNames(request):
 
     :returns: a list of strings of available location names.
     """
-    return router.getAvailableLocationNames(request)
+    return _bytesToStrs(router.getAvailableLocationNames(request))
 
 
 def getAvailableParameters(request):
@@ -137,7 +137,7 @@ def getAvailableParameters(request):
 
     :returns: a list of strings of available parameter names.
     """
-    return router.getAvailableParameters(request)
+    return _bytesToStrs(router.getAvailableParameters(request))
 
 
 def getAvailableLevels(request):
@@ -149,7 +149,7 @@ def getAvailableLevels(request):
 
     :returns: a list of strings of available levels.
     """
-    return router.getAvailableLevels(request)
+    return _bytesToStrs(router.getAvailableLevels(request))
 
 
 def getRequiredIdentifiers(request):
@@ -164,7 +164,7 @@ def getRequiredIdentifiers(request):
     if str(request) == request:
         warnings.warn("Use getRequiredIdentifiers(IDataRequest) instead",
                       DeprecationWarning)
-    return router.getRequiredIdentifiers(request)
+    return _bytesToStrs(router.getRequiredIdentifiers(request))
 
 
 def getOptionalIdentifiers(request):
@@ -178,7 +178,7 @@ def getOptionalIdentifiers(request):
     if str(request) == request:
         warnings.warn("Use getOptionalIdentifiers(IDataRequest) instead",
                       DeprecationWarning)
-    return router.getOptionalIdentifiers(request)
+    return _bytesToStrs(router.getOptionalIdentifiers(request))
 
 
 def getIdentifierValues(request, identifierKey):
@@ -190,7 +190,8 @@ def getIdentifierValues(request, identifierKey):
 
     :returns: a list of strings of allowed values for the specified identifier
     """
-    return router.getIdentifierValues(request, identifierKey)
+    return _bytesToStrs(router.getIdentifierValues(request, identifierKey))
+
 
 def newDataRequest(datatype=None, **kwargs):
     """
@@ -208,13 +209,14 @@ def newDataRequest(datatype=None, **kwargs):
     """
     return router.newDataRequest(datatype, **kwargs)
 
+
 def getSupportedDatatypes():
     """
     Gets the datatypes that are supported by the framework
 
     :returns: a list of strings of supported datatypes
     """
-    return router.getSupportedDatatypes()
+    return _bytesToStrs(router.getSupportedDatatypes())
 
 
 def changeEDEXHost(newHostName):
@@ -232,3 +234,13 @@ def changeEDEXHost(newHostName):
         router = ThriftClientRouter.ThriftClientRouter(THRIFT_HOST)
     else:
         raise TypeError("Cannot call changeEDEXHost when using JepRouter.")
+
+
+def _bytesToStrs(arrayOfByteStrs, encoding='utf-8'):
+    """
+    Converts a response of a list of byte strings to encoded strings.
+    :param arrayOfByteStrs: array of byte strings
+    :param encoding encoding to use; e.g. utf-8 or ascii
+    :return: array of decoded strings, as determined by the encoding argument
+    """
+    return [bytestr.decode(encoding) for bytestr in arrayOfByteStrs]
